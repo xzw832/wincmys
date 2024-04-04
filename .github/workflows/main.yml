@@ -13,7 +13,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.x'
+        python-version: '3.9'
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -21,7 +21,7 @@ jobs:
     - name: Bundle Python Application into an executable
       uses: JeromeSexton/pyinstaller-action@v2
       with:
-        python_version: '3.x'
+        python_version: '3.9'
         pyinstaller_flags: '--onefile'
         # include_files: 'path/to/additional/files'  # 如果有需要包含的其他文件
     - name: Archive production artifact
