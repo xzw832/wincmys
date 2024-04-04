@@ -1,0 +1,7 @@
+chromedriver
+selenium
+requests
+futures
+eventlet
+beautifulsoup4
+chardet
