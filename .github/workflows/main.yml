@@ -18,14 +18,14 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+    - name: Install PyInstaller
+      run: |
+        pip install pyinstaller
     - name: Bundle Python Application into an executable
-      uses: JeromeSexton/pyinstaller-action@v2
-      with:
-        python_version: '3.9'
-        pyinstaller_flags: '--onefile'
-        # include_files: 'path/to/additional/files'  # 如果有需要包含的其他文件
+      run: |
+        pyinstaller --onefile hotel_ipname_dq.py
     - name: Archive production artifact
       uses: actions/upload-artifact@v2
       with:
         name: my-python-app-windows
-        path: dist/my_python_app.exe
+        path: dist/hotel_ipname_dq.exe
