@@ -1,0 +1,31 @@
+name: Build Windows Executable
+
+on:
+  # 手动运行
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Bundle Python Application into an executable
+      uses: JeromeSexton/pyinstaller-action@v2
+      with:
+        python_version: '3.x'
+        pyinstaller_flags: '--onefile'
+        # include_files: 'path/to/additional/files'  # 如果有需要包含的其他文件
+    - name: Archive production artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: my-python-app-windows
+        path: dist/my_python_app.exe
