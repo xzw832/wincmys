@@ -3,5 +3,4 @@ requests
 futures
 eventlet
 chardet
-threading
 Queue
