@@ -23,9 +23,9 @@ jobs:
         pip install pyinstaller
     - name: Bundle Python Application into an executable
       run: |
-        pyinstaller --onefile hotel_ipname_dq.py
+        pyinstaller --onefile itv_all(1080).py
     - name: Archive production artifact
       uses: actions/upload-artifact@v2
       with:
         name: my-python-app-windows
-        path: dist/hotel_ipname_dq.exe
+        path: dist/itv_all(1080).exe
