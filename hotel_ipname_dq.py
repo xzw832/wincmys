@@ -44,9 +44,10 @@ diqu = [
     "辽宁",
     "山西",
     "河北",
-    "上海",
-    "台湾"
+    "上海"
     ]
+random_choice = random.choice(diqu)
+
 def contains_any_value(text, diqu):
     for dq in diqu:
         if dq in text:
@@ -56,7 +57,7 @@ def contains_any_value(text, diqu):
 infoList = []
 urls_y = []
 resultslist = []
-page = 10
+page = 2
 urls = [
     "http://tonkiang.us/hoteliptv.php?page=1&s=江苏",
     ]
@@ -80,7 +81,7 @@ for i in range(1, page + 1):
     try:
         # 创建一个Chrome WebDriver实例
         results = []
-        url = f"http://tonkiang.us/hoteliptv.php?page={i}&s=CCTV"
+        url = f"http://tonkiang.us/hoteliptv.php?page={i}&s={random_choice}"
         print(url)
         chrome_options = Options()
         chrome_options.add_argument('--headless')
@@ -164,6 +165,7 @@ with open("iplist.txt", 'w', encoding='utf-8') as file:
 sorted_list = sorted(resultslist)
 
 def worker(thread_url,counter_id):
+    global infoList
     try:
         # 创建一个Chrome WebDriver实例
         results = []
@@ -275,9 +277,11 @@ def worker(thread_url,counter_id):
             if "http" in urlsp:
                 # 获取锁
                 lock.acquire()
-                infoList.append(f"{name}_{in_name}_{dq_name},{urlsp}")
-                # 释放锁
-                lock.release()
+                try:
+                    infoList.append(f"{name}_{in_name},{urlsp}")
+                finally:
+                    # 释放锁
+                    lock.release()
         print(f"=========================>>> Thread {in_url} save ok")
     except Exception as e:
         print(f"=========================>>> Thread {in_url} caught an exception: {e}")
@@ -289,11 +293,25 @@ def worker(thread_url,counter_id):
         time.sleep(0)
 
 # 创建一个线程池，限制最大线程数为3
-with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-    # 提交任务到线程池，并传入参数
+# with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+#     # 提交任务到线程池，并传入参数
+#     counter = increment_counter()
+#     for i in sorted_list:  # 假设有5个任务需要执行
+#         executor.submit(worker, i ,counter)
+
+# 创建 ThreadPoolExecutor，但不立即启动
+executor = concurrent.futures.ThreadPoolExecutor(max_workers=10)
+
+# 设置守护线程
+for thread in executor._threads:
+    thread.daemon = True
+
+# 启动线程
+with executor:
     counter = increment_counter()
-    for i in sorted_list:  # 假设有5个任务需要执行
-        executor.submit(worker, i ,counter)
+    for i in sorted_list:
+        executor.submit(worker, i, counter)
+
 
 infoList = set(infoList)  # 去重得到唯一的URL列表
 infoList = sorted(infoList)
